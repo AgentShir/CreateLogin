@@ -1,7 +1,8 @@
 const express = require('express')
 const app = express()
 const path = require('path')
-const mustacheExpress = require('mustache-express');
+const mustacheExpress = require('mustache-express')
+const session = require('express-session');
 
 app.engine('mustache', mustacheExpress());
 app.set('views', './views')
