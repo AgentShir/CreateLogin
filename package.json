@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nodemon app"
   },
-  "author": "",
+  "author": "Shireen Garcia <garciasal@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "express": "^4.15.3",
@@ -21,5 +21,6 @@
     "author": "Michael Sweeney <jfmike@gmail.com> (https://github.com/overthemike)",
     "license": "MIT"
   },
-  "description": ""
+  "description": "",
+  "repository": "git@github.com:AgentShir/CreateLogin.git"
 }
