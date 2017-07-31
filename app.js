@@ -44,10 +44,24 @@ app.get('/bar', function (req, res, next) {
   res.send('you viewed this page ' + req.session.views['/bar'] + ' times')
 })
 
-app.post('/', function(req, res){
-  console.log('BODY: ', req.body);
-  res.render("user", {username:req.body.username,  password:req.body.password});
+app.post("/login", function(req, res) {
+    if(req.body.username && req.body.password) {
+        // check username and password
+        if(authenticated) {
+            // create a token and store it with the current date (if you want it to expire)
+            var token = generateAndStoreRandomString(req.body.username);
+            res.redirect("/" + token);
+            return;
+        }
+        // Do something if username or password wrong
+    }
+    // Do something if no username or password
 });
+
+// app.post('/', function(req, res){
+//   console.log('BODY: ', req.body);
+//   res.render("user", {username:req.body.username,  password:req.body.password});
+// });
 
 app.listen(3000, function(){
   console.log("App running on port 3000")
