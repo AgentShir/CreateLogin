@@ -14,16 +14,6 @@ app.get("/", function(req, res, next){
   res.render("index", {appType:"Express"})
 })
 
-var html = '<form action="/" method="post">' +
-          '<input type="text" name="username" placeholder="Username" />' +
-          '<input type="password" name="password" placeholder="Password" />' +
-          '<button type="submit">Submit</button>' +
-      '</form>';
-res.send(html);
-})
-
-// var app = express()
-
 app.use(session({
   secret: 'keyboard cat',
   resave: false,
@@ -53,6 +43,11 @@ app.get('/foo', function (req, res, next) {
 app.get('/bar', function (req, res, next) {
   res.send('you viewed this page ' + req.session.views['/bar'] + ' times')
 })
+
+app.post('/', function(req, res){
+  console.log('BODY: ', req.body);
+  res.render("user", {username:req.body.username,  password:req.body.password});
+});
 
 app.listen(3000, function(){
   console.log("App running on port 3000")
