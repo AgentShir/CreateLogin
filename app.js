@@ -3,6 +3,12 @@ const app = express()
 const path = require('path')
 const mustacheExpress = require('mustache-express')
 const session = require('express-session');
+const parseurl = require('parseurl')
+const bodyParser = require('body-parser')
+const validator = require('express-validator')
+
+let username = "green"
+let password = "riverdrink"
 
 app.engine('mustache', mustacheExpress());
 app.set('views', './views')
@@ -10,9 +16,7 @@ app.set('view engine', 'mustache')
 
 app.use(express.static(path.join(__dirname, 'static')))
 
-app.get("/", function(req, res, next){
-  res.render("index", {appType:"Express"})
-})
+app.use(validator())
 
 app.use(session({
   secret: 'keyboard cat',
@@ -20,48 +24,38 @@ app.use(session({
   saveUninitialized: true
 }))
 
-app.use(function (req, res, next) {
-  var views = req.session.views
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
-  if (!views) {
-    views = req.session.views = {}
-  }
-
-  // get the url pathname
-  var pathname = parseurl(req).pathname
-
-  // count the views
-  views[pathname] = (views[pathname] || 0) + 1
-
-  next()
-})
-
-app.get('/foo', function (req, res, next) {
-  res.send('you viewed this page ' + req.session.views['/foo'] + ' times')
-})
-
-app.get('/bar', function (req, res, next) {
-  res.send('you viewed this page ' + req.session.views['/bar'] + ' times')
-})
-
-app.post("/login", function(req, res) {
-    if(req.body.username && req.body.password) {
-        // check username and password
-        if(authenticated) {
-            // create a token and store it with the current date (if you want it to expire)
-            var token = generateAndStoreRandomString(req.body.username);
-            res.redirect("/" + token);
-            return;
-        }
-        // Do something if username or password wrong
+app.use(function(req, res, next){
+    if(req.session.views){
+        req.session.views += 1
+    } else {
+        req.session.views = 1
     }
-    // Do something if no username or password
-});
+    next()
+})
 
-// app.post('/', function(req, res){
-//   console.log('BODY: ', req.body);
-//   res.render("user", {username:req.body.username,  password:req.body.password});
-// });
+app.get("/", function(req, res, next){
+    if(req.session.isloggedIn === true){
+      res.render("index", { username: username, views: req.session.views})
+    } else{
+      res.redirect("/login")
+    }
+})
+
+app.get("/login", function(req, res, next){
+    res.render("login")
+})
+
+app.post("/login", function(req, res, next){
+    if(req.body.username === username && req.body.password === password){
+      req.session.isloggedIn === true
+        res.redirect("/")
+    } else {
+      res.redirect("/login")
+    }
+})
 
 app.listen(3000, function(){
   console.log("App running on port 3000")
